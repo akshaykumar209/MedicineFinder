@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicine Finder</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    header {
+      background-color: #026937;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    
+    button {
+      background-color: white;
+      color: #046e4f;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    main {
+      flex-grow: 1;
+      padding: 80px 20px 60px;
+    }
+    
+    footer {
+      background-color: #026937;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      bottom: 0;
+    }
+    
+    #searchInput {
+      width: 80%;
+      padding: 10px;
+      font-size: 18px;
+      border: 2px solid #026937;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .medicine-card {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      padding: 10px;
+      margin: 10px auto;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px #ccc;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .medicine-card h3 {
+      color: #00796B;
+    }
+    
+    .medicine-card img {
+      width: 100px;
+      height: 80px;
+      object-fit: cover;
+      margin-right: 15px;
+      border-radius: 5px;
+    }
+    
+    .medicine-info {
+      flex-grow: 1;
+    }
+    
+    .alternative-card {
+      background-color: white;
+      padding: 10px;
+      margin: 10px auto;
+      width: 90%;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px #ccc;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+    }
+    
+    .alternative-card img {
+      margin-right: 15px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .btn {
+      color: #026937;
+      background: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      
+      border-radius: 5px;
+    }
+    
+    #aboutPage {
+      background-color: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px #ccc;
+      text-align: start;
+    }
+    
+    .medicine-card:hover {
+      transform: scale(1.05);
+      transition: 0.1s ease-in-out;
+    }
+    
+    .medicine-card {
+      cursor: pointer;
+    }
+    
+    #aboutPage {
+      background-color: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: left;
+    }
+    
+    #aboutPage h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #026937;
+    }
+    
+    .about-section {
+      background: #FFFFFF;
+      padding: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .about-section h3 {
+      color: #026937;
+      margin-bottom: 10px;
+    }
+    
+    .about-section ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    .about-section li {
+      margin-bottom: 5px;
+    }
+    
+    .close {
+      background: #026937;
+      color: white;
+    }
+    
+    .back {
+      margin: 10px;
+      display: flex;
+      font-size: 12px;
+      background: #026937;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <header>
+    <h1>Medicine Finder</h1>
+    <button class="btn" onclick="showAbout()">About Me</button>
+  </header>
+  
+  <main>
+    <!--  <button class="btn" onclick="showAbout()">About Me</button>
+    -->
+    <input type="text" id="searchInput" placeholder="Search medicine..." onkeyup="searchMedicine()">
+    
+    <div id="medicineList"></div>
+    
+    <div id="alternativeList" class="hidden">
+      <button class="back" class="btn" onclick="goBack()">⬅ Back to Search</button>
+      <h2>Alternative Medicines</h2>
+      <div id="alternativeContent"></div>
+      <!-- <button class="btn" onclick="goBack()">⬅ Back to Search</button>-->
+    </div>
+    
+    
+    <div id="aboutPage" class="hidden">
+      <h2>About Me</h2>
+      
+      <div class="about-section">
+        <h3>Personal Details</h3>
+        <ul>
+          <li><b>Name:</b> Akshay Kumar</li>
+          <li><b>Education:</b> 11th Grade, S.D. Inter College (Muzaffarnagar)</li>
+          <li><b>Mother's Name:</b> Mrs. Sushma</li>
+          <li><b>Father's Name:</b> Mr. Dheeraj</li>
+          <li><b>Siblings:</b> I have two sisters</li>
+        </ul>
+      </div>
+      
+      <div class="about-section">
+        <h3>My Coding Journey</h3>
+        <ul>
+          <li><b>Who Introduced Me to Coding?</b> My school</li>
+          <li><b>When Did I Start?</b> During my web development studies</li>
+          <li><b>First Languages:</b> HTML, CSS, JavaScript</li>
+        </ul>
+      </div>
+      
+      <div class="about-section">
+        <h3>Experience with CodeYogi</h3>
+        <ul>
+          <li><b>Joined:</b> 2 August 2024</li>
+          <li><b>Learned Skills:</b> HTML, CSS, JavaScript</li>
+        </ul>
+      </div>
+      
+      <div class="about-section">
+        <h3>Additional Achievements</h3>
+        <ul>
+          <li><b>Competitions:</b> Wordle</li>
+          <li><b>Awards:</b> None</li>
+        </ul>
+      </div>
+      
+      <div class="about-section">
+        <h3>Future Plans</h3>
+        <ul>
+          <li><b>Career Goal:</b> To become a Software Developer</li>
+          <li><b>Reason:</b> Passionate about innovative solutions</li>
+        </ul>
+      </div>
+      
+      <button class="close" class="btn" onclick="closeAbout()">Close</button>
+    </div>
+    
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 Medicine Finder</p>
+  </footer>
+  
+  <script>
+    const medicines = [
+    {
+      name: "Daraprin",
+      price: "Rs 250",
+      manufacturer: "Indica Laboratories Py",
+      image: "https://dwaey.com/medrg/upload/1723992724.png",
+      alternative: [
+      {
+        name: "Daramin",
+        link: "https://www.1mg.com/drugs/daramin-25mg-tablet-201707",
+        price: "Rs 15",
+        manufacturer: "Neti Pharma",
+        image: "https://www.netmeds.com/images/product-v1/600x600/1136339/daramin_25mg_tablet_10s_742022_0_0.jpg"
+      }]
+    },
+    {
+      name: "Zytiga",
+      price: "Rs. 75000",
+      manufacturer: "Mylan Pharma",
+      image: "https://i.ibb.co/5XFR2wc0/product-images-1719919503102-367500702-Zytiga-250mg-Tablet-103434.jpg",
+      alternative: [
+        { name: "Mytera", link: "https://www.apollopharmacy.in/medicine/mytera-250mg-tablet-120-s", price: "Rs. 15000", manufacturer: "Mylan Pharma", image: "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cx456kwzkuscoxk4bl4d.jpg?format=auto" },
+        { name: "Abitate", link: "https://www.apollopharmacy.in/medicine/abitate-250mg-tab-120-s", price: "Rs. 29000", manufacturer: "RPG Life Sciences", image: "https://assets.mrmed.in/product-images/product-images-1632405352428-700552497-100012_1.jpg" }
+      ]
+    },
+    {
+      name: "Glivec",
+      price: "Rs. 6600",
+      manufacturer: "Natco Pharma",
+      image: "https://onemg.gumlet.io/l_watermark_346,w_690,h_700/a_ignore,w_690,h_700,c_pad,q_auto,f_auto/a0f76dfdb04146cfb0ec1f5099800eb6.jpg",
+      alternative: [
+        { name: "Veenat", link: "https://www.1mg.com/drugs/veenat-400-tablet-14360?srsltid=AfmBOoozkKt5QjS2GyIzsogcO_R2FtOGzBoVQFn3fwsoCUwofa590wBc&wpsrc=Google+Organic+Search", price: "Rs. 1500", manufacturer: "Natco Pharma", image: "https://onemg.gumlet.io/l_watermark_346,w_690,h_700/a_ignore,w_690,h_700,c_pad,q_auto,f_auto/a5f53d8d234d45a695d7c6f59707c652.jpg" }
+      ]
+    },
+    {
+      name: "Paracetamol",
+      price: "Rs. 20-30 per 10 tablets",
+      manufacturer: "GlaxoSmithKline",
+      image: "https://5.imimg.com/data5/SELLER/Default/2022/9/QR/AF/MV/69966959/paracip-paracetamol-650-tablet.jpg",
+      alternative: [
+        { name: "Crocin", link: "https://www.1mg.com/search/all?name=crocin", price: "Rs. 25", manufacturer: "GlaxoSmithKline", image: "https://cdn01.pharmeasy.in/dam/products_otc/H45820/crocin-650-tablet-15-nos-3-1689759566.jpg" },
+        { name: "Dolo 65", link: "https://www.1mg.com/search/all?name=dolo%2065", price: "Rs. 27", manufacturer: "Micro Labs", image: "https://assets.truemeds.in/Images/ProductImage/TM-TACR1-011691/dolo-650-tablet-15_dolo-650-tablet-15--TM-TACR1-011691_1.png" },
+        { name: "Calpol", link: "https://www.1mg.com/search/all?name=calpol", price: "Rs. 30", manufacturer: "GSK", image: "https://drugstreet.in/wp-content/uploads/2023/12/1000046750.jpg" }
+      ]
+    },
+    {
+      name: "Combiflam",
+      price: "Rs.20-30 per 10 tablets",
+      manufacturer: "Sanofi",
+      image: "https://images.apollo247.in/pub/media/catalog/product/c/o/combiflam_tablet_20_s-1.png?tr=q-80,f-webp,w-400,dpr-3,c-at_max%201200w",
+      alternative: [
+        { name: "Ibuprofen", link: "https://www.1mg.com/search/all?filter=true&name=Ibuprofen", price: "Rs. 25", manufacturer: "Sanofi", image: "https://5.imimg.com/data5/SELLER/Default/2023/9/344827499/TG/YT/FY/192270567/ibuprofen-tablet-400mg.png" },
+        { name: "Brufen", link: "https://www.1mg.com/search/all?name=brufen", price: "Rs. 28", manufacturer: "Abbott", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUmWwHGkFj5M1SKY0GM-af-pHOyLMcLqRdQ&s" }
+      ]
+    },
+    {
+      name: "Disprin",
+      price: "Rs. 10-20 for 10 tablets",
+      manufacturer: "Reckitt Benckiser",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfABbWyZY3yywBJtf60mpv4GyfpwTHVj5yGA&s",
+      alternative: [
+        { name: "Ecosprin", link: "https://www.1mg.com/search/all?filter=true&name=Ecosprin", price: "Rs. 22", manufacturer: "USV Ltd.", image: "https://assets.truemeds.in/Images/ProductImage/TM-TACR1-012745/ecosprin-75-tablet-14_ecosprin-75-tablet-14--TM-TACR1-012745_1.png" },
+        { name: "Aspirin", link: "", price: "Rs. 20", manufacturer: "Bayer", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCeIfr0UEUuInFvEhsJRyF3aVQKXuaMSIalA&s" },
+        { name: "Aspro", link: "https://www.1mg.com/search/all?filter=true&name=Aspirin", price: "Rs. 18", manufacturer: "Nicholas Healthcare Ltd", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2SvOcNgxiuLa4yDomGtmGL5e22x6BHuX5qQ&s" }
+      ]
+    },
+    {
+      name: "ORS",
+      price: "Rs. 15-25 per sachet",
+      manufacturer: "FDC Ltd",
+      image: "https://cdn01.pharmeasy.in/dam/products_otc/W81928/prolyte-ors-orange-drink-sachet-21-gm-2-1654249497.jpg",
+      alternative: [
+        { name: "Electral", link: "https://www.1mg.com/search/all?name=ors", price: "Rs. 16", manufacturer: "FDC Ltd", image: "https://m.media-amazon.com/images/I/81jrDrIJoNL.jpg" },
+        { name: "ORSL", link: "https://www.1mg.com/search/all?name=ors", price: "Rs. 18", manufacturer: "Dabur", image: "https://images.apollo247.in/pub/media/catalog/product/o/r/ors0011_1-1-_1_.jpg" },
+        { name: "Peditral", link: "https://www.1mg.com/search/all?name=ors", price: "Rs. 22", manufacturer: "Cipla", image: "https://images.apollo247.in/pub/media/catalog/product/P/E/PED0040_1_1.jpg?tr=q-80,f-webp,w-400,dpr-3,c-at_max%201200w" }
+      ]
+    },
+    {
+      name: "Vicks Vaporub",
+      price: "Rs. 40-60 for 25g",
+      manufacturer: "Procter & Gamble",
+      image: "https://cdn01.pharmeasy.in/dam/products_otc/181140/vicks-vaporub-50ml-relief-from-cold-cough-headache-and-body-pain-2-1677525570.jpg",
+      alternative: [
+        { name: "Zandu Balm", link: "https://www.1mg.com/search/all?filter=true&name=Zandu%20balm", price: "Rs. 45", manufacturer: "Emami", image: "https://m.media-amazon.com/images/I/617dG3SoVKL.jpg" },
+        { name: "Amrutanjan", link: "https://www.1mg.com/search/all?filter=true&name=Amrutanjan%20balm", price: "Rs. 50", manufacturer: "Amrutanjan Healthcare", image: "https://cdn01.pharmeasy.in/dam/products_otc/010715/amrutanjan-strong-doub-50-ml-2-1674209955.jpg?dim=400x0&dpr=1&q=100" },
+        { name: "Tiger Balm", link: "https://www.1mg.com/search/all?name=tiger%20balm", price: "Rs. 55", manufacturer: "Haw Par Healthcare", image: "https://rukminim2.flixcart.com/image/850/1000/jd1z9u80/body-pain-relief/v/n/b/30-red-ointment-30g-tiger-balm-original-imaf224hjngnfmhs.jpeg?q=90&crop=false" }
+      ]
+    },
+    {
+      name: "Digene",
+      price: "Rs. 20-40 for 10 tablets",
+      manufacturer: "Abbott",
+      image: "https://cdn01.pharmeasy.in/dam/products_otc/255390/digene-gel-acidity-gas-relief-200ml-mint-flavour-sugar-free-2-1710939921.jpg",
+      alternative: [
+        { name: "ENO", link: "https://www.1mg.com/search/all?name=eno", price: "Rs. 60", manufacturer: "GlaxoSmithKline", image: "https://i-cf65.ch-static.com/content/dam/cf-consumer-healthcare/nutrition-eno/en_IN/home/mobile/homepage-header-carousal-1-v3_mobile.jpg?auto=format" },
+        { name: "Gelusil", link: "https://www.1mg.com/search/all?name=gelusil", price: "Rs. 65", manufacturer: "Pfizer", image: "https://images.apollo247.in/pub/media/catalog/product/G/E/GEL0002_3_1.jpg" }
+      ]
+    },
+    {
+      name: "Strepsils",
+      price: "Rs. 30-50 for a pack of 8-10 tablets",
+      manufacturer: "Reckitt Benckiser",
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/2/RX/ZI/IF/81505918/strepsils-blister.jpg",
+      alternative: [
+        { name: "Vicks", link: "https://www.1mg.com/search/all?name=vicks&filter=true&state=1&scroll_id=Rre-0688yDrQYBn-2UkFiY-vOvNzHZ9Vlp5wJSeiWio=", price: "Rs. 40", manufacturer: "Procter & Gamble", image: "https://images.ctfassets.net/umpxkz97ty8t/4tjmmu8xgFdItABWjhpWTA/88afdcd6055df8b4fac3fdea0098dfa5/VCD4-Packs.png" },
+        { name: "Dabur Honitus", link: "https://www.1mg.com/search/all?name=dabur%20honitus", price: "Rs. 45", manufacturer: "Dabur India Ltd", image: "https://5.imimg.com/data5/UF/HY/GLADMIN-43545561/dabur-honitus-cough-drops.png" },
+        { name: "Cofsils", link: "https://www.1mg.com/search/all?name=cofsils", price: "Rs. 48", manufacturer: "Cipla Healthcare", image: "https://5.imimg.com/data5/SELLER/Default/2020/9/HW/ZE/YJ/14356045/cosils-orange.jpg" }
+      ]
+    },
+    {
+      name: "Benadryl",
+      price: "Rs. 50-80 per bottle (100 ml)",
+      manufacturer: "Johnson & Johnson",
+      image: "https://images.apollo247.in/pub/media/catalog/product/b/e/ben0053_1.jpg?tr=q-80,f-webp,w-400,dpr-3,c-at_max%201200w",
+      alternative: [
+        { name: "Corex", link: "https://www.1mg.com/search/all?name=corex", price: "Rs. 60", manufacturer: "Pfizer", image: "https://shreedashrath.com/wp-content/uploads/2021/06/corex-600x600.jpg" },
+        { name: "Ascoril-D", link: "https://www.1mg.com/search/all?filter=true&name=Ascoril", price: "Rs. 58", manufacturer: "Glenmark", image: "https://images.apollo247.in/pub/media/catalog/product/a/s/asc0019.jpg" }
+      ]
+    },
+    {
+      name: "Augmentin 1000 Duo Tablet",
+      price: "Rs 1000",
+      manufacturer: "Alkem Laboratories",
+      image: "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/bodminug3xmfcubbrdix.jpg?format=auto",
+      alternative: [
+        { name: "Clavam", link: "https://www.1mg.com/drugs/clavam-625-tablet-63841", price: "Rs. 193", manufacturer: "Alkem Laboratories", image: "https://images.apollo247.in/pub/media/catalog/product/c/l/cla0004.jpg" }
+      ]
+    },
+    {
+      name: "Crestor",
+      price: "Rs. 732",
+      manufacturer: "Astrazeneca",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Jd-k1uea3upVeTJNmtS8y9ASkNOwsxN8Uw&s",
+      alternative: [
+        { name: "Rosuvas", link: "https://www.1mg.com/drugs/rosuvas-10-tablet-113791", price: "Rs. 730", manufacturer: "Sun Pharmaceutical", image: "https://5.imimg.com/data5/SELLER/Default/2024/6/425035920/PX/LR/WN/147700842/rosuvas-10-mg-tablet1-500x500.jpg" }
+      ]
+    },
+    {
+      name: "Lantus",
+      price: "Rs. 634",
+      manufacturer: "Sanofi India Ltd",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3pt0WVYQOROwvBFQi4lo5Fy0HvifJla0VUw&s",
+      alternative: [
+        { name: "Basalog", link: "https://www.1mg.com/drugs/basalog-100iu-ml-refill-cartridge-164232", price: "Rs. 481", manufacturer: "Biocon", image: "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/0c379a5816da4e63b74cd6889b2d382a.jpg?format=auto" }
+      ]
+    },
+    {
+      name: "Tamiflu",
+      price: "Rs. 1238",
+      manufacturer: "Roche Products India",
+      image: "https://d2jx2rerrg6sh3.cloudfront.net/image-handler/picture/2021/4/shutterstock_170422580.jpg",
+      alternative: [
+        { name: "Fluvir", link: "https://www.1mg.com/drugs/fluvir-75mg-capsule-25088", price: "Rs. 1260", manufacturer: "Hetero Drugs Ltd", image: "https://images.apollo247.in/pub/media/catalog/product/f/l/flu0174.jpg?tr=q-80,f-webp,w-400,dpr-3,c-at_max%201200w" }
+      ]
+    },
+    {
+      name: "Eliquis",
+      price: "Rs. 1086",
+      manufacturer: "Pfizer Ltd",
+      image: "https://5.imimg.com/data5/SELLER/Default/2022/9/KS/UI/TA/136059498/eliquis-5mg-tablet.jpg",
+      alternative: [
+        { name: "Apigat", link: "https://www.1mg.com/drugs/apigat-5-tablet-540276", price: "Rs. 533", manufacturer: "Natco Pharma Ltd", image: "https://www.practostatic.com/practopedia-images/v3/res-750/apigat-2-5-mg-tablet-30-s_15fa3947-9fad-47f2-bbed-8d5f500e66e9.JPG" }
+      ]
+    }];
+    
+    function loadMedicines() {
+      let medicineList = document.getElementById('medicineList');
+      medicineList.innerHTML = "";
+      medicines.forEach(med => {
+        let medDiv = document.createElement('div');
+        medDiv.classList.add('medicine-card');
+        medDiv.innerHTML = `
+          <img src="${med.image}" alt="${med.name}">
+          <div class="medicine-info">
+            <h3>${med.name}</h3>
+            <p>Price: ${med.price}</p>
+            <p>Manufacturer: ${med.manufacturer}</p>
+          </div>
+        `;
+        medDiv.onclick = () => showAlternativeMedicines(med.alternative);
+        medicineList.appendChild(medDiv);
+      });
+    }
+    
+    function searchMedicine() {
+      let input = document.getElementById('searchInput').value.toLowerCase();
+      let medicineList = document.getElementById('medicineList');
+      medicineList.innerHTML = "";
+      medicines.forEach(med => {
+        if (med.name.toLowerCase().includes(input)) {
+          let medDiv = document.createElement('div');
+          medDiv.classList.add('medicine-card');
+          medDiv.innerHTML = `
+            <img src="${med.image}" alt="${med.name}">
+            <div class="medicine-info">
+              <h3>${med.name}</h3>
+              <p>Price: ${med.price}</p>
+              <p>Manufacturer: ${med.manufacturer}</p>
+            </div>
+          `;
+          medDiv.onclick = () => showAlternativeMedicines(med.alternative);
+          medicineList.appendChild(medDiv);
+        }
+      });
+    }
+    
+    function showAlternativeMedicines(alternatives) {
+      document.getElementById('medicineList').classList.add("hidden");
+      document.getElementById('searchInput').classList.add("hidden");
+      document.getElementById('alternativeList').classList.remove("hidden");
+      
+      let alternativeContent = document.getElementById('alternativeContent');
+      alternativeContent.innerHTML = "";
+      alternatives.forEach(med => {
+        let altDiv = document.createElement('div');
+        altDiv.classList.add('alternative-card');
+        altDiv.innerHTML = `
+        <img src="${med.image || 'https://via.placeholder.com/100'}" alt="${med.name}" style="width:100px;height:80px;object-fit:cover;margin-bottom:10px;border-radius:5px;">
+        <div>
+  <h3>${med.name}</h3>
+  <p>Price: ${med.price || 'N/A'}</p>
+  <p>Manufacturer: ${med.manufacturer || 'N/A'}</p>
+  </div>
+`;
+        altDiv.onclick = () => window.open(med.link, "_blank");
+        alternativeContent.appendChild(altDiv);
+      });
+    }
+    
+    function goBack() {
+      document.getElementById('medicineList').classList.remove("hidden");
+      document.getElementById('searchInput').classList.remove("hidden");
+      document.getElementById('alternativeList').classList.add("hidden");
+    }
+    
+    function showAbout() {
+      document.getElementById("medicineList").classList.add("hidden");
+      document.getElementById("searchInput").classList.add("hidden");
+      document.getElementById("alternativeList").classList.add("hidden");
+      document.getElementById("aboutPage").classList.remove("hidden");
+    }
+    
+    
+    function closeAbout() {
+      document.getElementById("aboutPage").classList.add("hidden");
+      document.getElementById("medicineList").classList.remove("hidden");
+      document.getElementById("searchInput").classList.remove("hidden");
+    }
+    
+    loadMedicines();
+  </script>
+  
+</body>
+
+</html>
